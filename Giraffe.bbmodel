@@ -9583,6 +9583,7 @@
 			"material_config": {
 				"color_value": [255, 255, 255, 255],
 				"mer_value": [0, 0, 0],
+				"subsurface_value": 0,
 				"saved": true
 			},
 			"name": "Main",
@@ -9593,6 +9594,7 @@
 			"material_config": {
 				"color_value": [255, 255, 255, 255],
 				"mer_value": [0, 0, 0],
+				"subsurface_value": 0,
 				"saved": true
 			},
 			"name": "Armor",
@@ -9603,6 +9605,7 @@
 			"material_config": {
 				"color_value": [255, 255, 255, 255],
 				"mer_value": [0, 0, 0],
+				"subsurface_value": 0,
 				"saved": true
 			},
 			"name": "Armor Trims",
