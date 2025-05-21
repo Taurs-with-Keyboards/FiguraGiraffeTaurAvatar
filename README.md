@@ -1,4 +1,4 @@
-# [GiraffeTaur](https://github.com/TotalTakeover/FiguraGiraffeTaurAvatar)
+# [GiraffeTaur](https://github.com/Taurs-with-Keyboards/FiguraGiraffeTaurAvatar)
 ### Version: v1.0.3
 This Figura avatar is a template designed around turning the user into a Giraffe Taur.
 
