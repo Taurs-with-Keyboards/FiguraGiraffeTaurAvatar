@@ -47,7 +47,6 @@ local ears = squapi.ear:new(
 	0.9       -- Bounce (0.9)
 )
 
-
 -- Tails table
 local tailParts = {
 	
