@@ -99,6 +99,12 @@ function events.RENDER(delta, context)
 	parts.group.UpperBody:offsetPivot(crouchPos):pos(-crouchPos.__z * 0.6)
 	parts.group.LowerBody:pos(crouchPos)
 	
+	-- Spyglass rotations
+	local headRot = vanilla_model.HEAD:getOriginRot()
+	headRot.x = math.clamp(headRot.x, -90, 30)
+	parts.group.Spyglass:offsetRot(headRot)
+		:pos(pose.crouch and vec(0, -4, 0) or nil)
+	
 end
 
 -- GS Blending Setup
