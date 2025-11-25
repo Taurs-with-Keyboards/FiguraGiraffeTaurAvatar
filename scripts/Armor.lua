@@ -52,77 +52,34 @@ giraffeArmor.Materials.turtle
 	:setTexture(textures["textures.armor.turtleHelmet"] or textures["Giraffe.turtleHelmet"])
 
 -- Trims
--- Bolt
-giraffeArmor.TrimPatterns.bolt
-	:setTexture(textures["textures.armor.trims.boltTrim"] or textures["Giraffe.boltTrim"])
+local trims = {
+	"bolt",
+	"coast",
+	"dune",
+	"eye",
+	"flow",
+	"host",
+	"raiser",
+	"rib",
+	"sentry",
+	"shaper",
+	"silence",
+	"snout",
+	"spire",
+	"tide",
+	"vex",
+	"ward",
+	"wayfinder",
+	"wild"
+}
 
--- Coast
-giraffeArmor.TrimPatterns.coast
-	:setTexture(textures["textures.armor.trims.coastTrim"] or textures["Giraffe.coastTrim"])
-
--- Dune
-giraffeArmor.TrimPatterns.dune
-	:setTexture(textures["textures.armor.trims.duneTrim"] or textures["Giraffe.duneTrim"])
-
--- Eye
-giraffeArmor.TrimPatterns.eye
-	:setTexture(textures["textures.armor.trims.eyeTrim"] or textures["Giraffe.eyeTrim"])
-
--- Flow
-giraffeArmor.TrimPatterns.flow
-	:setTexture(textures["textures.armor.trims.flowTrim"] or textures["Giraffe.flowTrim"])
-
--- Host
-giraffeArmor.TrimPatterns.host
-	:setTexture(textures["textures.armor.trims.hostTrim"] or textures["Giraffe.hostTrim"])
-
--- Raiser
-giraffeArmor.TrimPatterns.raiser
-	:setTexture(textures["textures.armor.trims.raiserTrim"] or textures["Giraffe.raiserTrim"])
-
--- Rib
-giraffeArmor.TrimPatterns.rib
-	:setTexture(textures["textures.armor.trims.ribTrim"] or textures["Giraffe.ribTrim"])
-
--- Sentry
-giraffeArmor.TrimPatterns.sentry
-	:setTexture(textures["textures.armor.trims.sentryTrim"] or textures["Giraffe.sentryTrim"])
-
--- Shaper
-giraffeArmor.TrimPatterns.shaper
-	:setTexture(textures["textures.armor.trims.shaperTrim"] or textures["Giraffe.shaperTrim"])
-
--- Silence
-giraffeArmor.TrimPatterns.silence
-	:setTexture(textures["textures.armor.trims.silenceTrim"] or textures["Giraffe.silenceTrim"])
-
--- Snout
-giraffeArmor.TrimPatterns.snout
-	:setTexture(textures["textures.armor.trims.snoutTrim"] or textures["Giraffe.snoutTrim"])
-
--- Spire
-giraffeArmor.TrimPatterns.spire
-	:setTexture(textures["textures.armor.trims.spireTrim"] or textures["Giraffe.spireTrim"])
-
--- Tide
-giraffeArmor.TrimPatterns.tide
-	:setTexture(textures["textures.armor.trims.tideTrim"] or textures["Giraffe.tideTrim"])
-
--- Vex
-giraffeArmor.TrimPatterns.vex
-	:setTexture(textures["textures.armor.trims.vexTrim"] or textures["Giraffe.vexTrim"])
-
--- Ward
-giraffeArmor.TrimPatterns.ward
-	:setTexture(textures["textures.armor.trims.wardTrim"] or textures["Giraffe.wardTrim"])
-
--- Wayfinder
-giraffeArmor.TrimPatterns.wayfinder
-	:setTexture(textures["textures.armor.trims.wayfinderTrim"] or textures["Giraffe.wayfinderTrim"])
-
--- Wild
-giraffeArmor.TrimPatterns.wild
-	:setTexture(textures["textures.armor.trims.wildTrim"] or textures["Giraffe.wildTrim"])
+-- Apply trims
+for _, trim in ipairs(trims) do
+	local tex = textures["textures.armor.trims."..trim.."Trim"] or textures["Giraffe."..trim.."Trim"] or false
+	if tex then
+		giraffeArmor.TrimPatterns[trim]:setTexture(tex)
+	end
+end
 
 -- Config setup
 config:name("GiraffeTaur")
