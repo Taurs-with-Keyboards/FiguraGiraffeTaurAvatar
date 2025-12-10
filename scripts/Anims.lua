@@ -180,15 +180,17 @@ function pings.setAnimsArmsMove(boolean)
 	
 end
 
-function pings.syncAnims(a)
+-- Sync variables
+function pings.syncAnims(...)
 	
-	armsMove = a
+	armsMove = ...
 	
 end
 
 -- Host only instructions
 if not host:isHost() then return end
 
+-- Sync on tick
 function events.TICK()
 	
 	if world.getTime() % 200 == 0 then
