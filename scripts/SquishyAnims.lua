@@ -4,6 +4,7 @@ if not s then return {} end
 
 -- Required scripts
 local parts   = require("lib.PartsAPI")
+local sync    = require("lib.LetThatSyncFig")
 local lerp    = require("lib.LerpAPI")
 local ground  = require("lib.GroundCheck")
 local pose    = require("scripts.Posing")
@@ -12,10 +13,8 @@ local effects = require("scripts.SyncedVariables")
 -- Animation setup
 local anims = animations.Giraffe
 
--- Config setup
-config:name("GiraffeTaur")
-local earFlick = config:load("SquapiEarFlick")
-if earFlick == nil then earFlick = true end
+-- Synced variables setup
+local earFlick = sync.add(config:load("SquapiEarFlick"), true)
 
 -- Calculate parent's rotations
 local function calculateParentRot(m)
@@ -35,13 +34,13 @@ local legLerp = lerp:new(1, 0.5)
 local ears = squapi.ear:new(
 	parts.group.LeftEar,
 	parts.group.RightEar,
-	0,        -- Range Multiplier (0)
-	false,    -- Horizontal (false)
-	1,        -- Bend Strength (1)
-	earFlick, -- Do Flick (earFlick)
-	400,      -- Flick Chance (400)
-	0.05,     -- Stiffness (0.05)
-	0.9       -- Bounce (0.9)
+	0,              -- Range Multiplier (0)
+	false,          -- Horizontal (false)
+	1,              -- Bend Strength (1)
+	sync[earFlick], -- Do Flick (earFlick)
+	400,            -- Flick Chance (400)
+	0.05,           -- Stiffness (0.05)
+	0.9             -- Bounce (0.9)
 )
 
 -- Tails table
@@ -152,7 +151,7 @@ function events.TICK()
 	end
 	
 	-- Control ear flick based on variables
-	ears.doEarFlick = earFlick
+	ears.doEarFlick = sync[earFlick]
 	
 end
 
@@ -180,29 +179,13 @@ end
 -- Ear flick toggle
 function pings.setSquapiEarFlick(boolean)
 	
-	earFlick = boolean
-	config:save("SquapiEarFlick", earFlick)
-	
-end
-
--- Sync variables
-function pings.syncSquapi(...)
-	
-	earFlick = ...
+	sync[earFlick] = boolean
+	config:save("SquapiEarFlick", sync[earFlick])
 	
 end
 
 -- Host only instructions
 if not host:isHost() then return end
-
--- Sync on tick
-function events.TICK()
-	
-	if world.getTime() % 200 == 0 then
-		pings.syncSquapi(earFlick)
-	end
-	
-end
 
 -- Required scripts
 local s, wheel, itemCheck, c = pcall(require, "scripts.ActionWheel")
@@ -230,7 +213,7 @@ a.earsAct = animsPage:newAction()
 	:item(itemCheck("bone"))
 	:toggleItem(itemCheck("feather"))
 	:onToggle(pings.setSquapiEarFlick)
-	:toggled(earFlick)
+	:toggled(sync[earFlick])
 
 -- Update actions
 function events.RENDER(delta, context)

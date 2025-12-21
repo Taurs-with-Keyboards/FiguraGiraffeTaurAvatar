@@ -1,6 +1,7 @@
 -- Required scripts
 require("lib.GSAnimBlend")
 local parts  = require("lib.PartsAPI")
+local sync   = require("lib.LetThatSyncFig")
 local lerp   = require("lib.LerpAPI")
 local ground = require("lib.GroundCheck")
 local pose   = require("scripts.Posing")
@@ -8,17 +9,16 @@ local pose   = require("scripts.Posing")
 -- Animations setup
 local anims = animations.Giraffe
 
--- Config setup
-config:name("GiraffeTaur")
-local armsMove = config:load("ArmsMove") or false
+-- Synced variables setup
+local armsMove = sync.add(config:load("ArmsMove"), false)
 
 -- Variables
 local canAct = false
 local canSit = false
 
 -- Arms setup
-local leftArmLerp  = lerp:new(armsMove and 1 or 0, 0.5)
-local rightArmLerp = lerp:new(armsMove and 1 or 0, 0.5)
+local leftArmLerp  = lerp:new(sync[armsMove] and 1 or 0, 0.5)
+local rightArmLerp = lerp:new(sync[armsMove] and 1 or 0, 0.5)
 
 -- Gets the origin rotation of a part, clamped
 local function getOriginRot(part, delta)
@@ -86,8 +86,8 @@ function events.TICK()
 	local armShouldMove = false
 	
 	-- Arms movement targets
-	leftArmLerp.target  = (armsMove or armShouldMove or swingL or usingL or bow) and 0 or -1
-	rightArmLerp.target = (armsMove or armShouldMove or swingR or usingR or bow) and 0 or -1
+	leftArmLerp.target  = (sync[armsMove] or armShouldMove or swingL or usingL or bow) and 0 or -1
+	rightArmLerp.target = (sync[armsMove] or armShouldMove or swingR or usingR or bow) and 0 or -1
 	
 end
 
@@ -175,44 +175,20 @@ end
 -- Arm movement toggle
 function pings.setAnimsArmsMove(boolean)
 	
-	armsMove = boolean
-	config:save("ArmsMove", armsMove)
-	
-end
-
--- Sync variables
-function pings.syncAnims(...)
-	
-	armsMove = ...
+	sync[armsMove] = boolean
+	config:save("ArmsMove", sync[armsMove])
 	
 end
 
 -- Host only instructions
 if not host:isHost() then return end
 
--- Sync on tick
-function events.TICK()
-	
-	if world.getTime() % 200 == 0 then
-		pings.syncAnims(armsMove)
-	end
-	
-end
+-- Keybinds
+local sitKeybind = keybinds:newKeybind("Sit Animation", "key.keyboard.keypad.1")
+	:onPress(function() pings.setAnimToggleSit(not anims.sit:isPlaying()) end)
 
--- Sit keybind
-local sitBind   = config:load("AnimSitKeybind") or "key.keyboard.keypad.1"
-local setSitKey = keybinds:newKeybind("Sit Animation"):onPress(function() pings.setAnimToggleSit(not anims.sit:isPlaying()) end):key(sitBind)
-
--- Keybind updaters
-function events.TICK()
-	
-	local sitKey = setSitKey:getKey()
-	if sitKey ~= sitBind then
-		sitBind = sitKey
-		config:save("AnimSitKeybind", sitKey)
-	end
-	
-end
+-- Sync config keybinds
+sync.keybind(sitKeybind, "AnimSitKeybind")
 
 -- Table setup
 local t = {}
@@ -247,7 +223,7 @@ a.armsAct = animsPage:newAction()
 	:item(itemCheck("red_dye"))
 	:toggleItem(itemCheck("rabbit_foot"))
 	:onToggle(pings.setAnimsArmsMove)
-	:toggled(armsMove)
+	:toggled(sync[armsMove])
 
 -- Update actions
 function events.RENDER(delta, context)
