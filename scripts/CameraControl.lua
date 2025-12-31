@@ -166,7 +166,7 @@ end
 if not host:isHost() then return end
 
 -- Required scripts
-local s, wheel, itemCheck, c = pcall(require, "scripts.ActionWheel")
+local s, wheel, c = pcall(require, "scripts.ActionWheel")
 if not s then return end -- Kills script early if ActionWheel.lua isnt found
 pcall(require, "scripts.Player") -- Tries to find script, not required
 
@@ -179,18 +179,18 @@ local a = {}
 
 -- Actions
 a.pageAct = parentPage:newAction()
-	:item(itemCheck("redstone"))
+	:item("redstone")
 	:onLeftClick(function() wheel:descend(cameraPage) end)
 
 a.posAct = cameraPage:newAction()
-	:item(itemCheck("skeleton_skull"))
-	:toggleItem(itemCheck("player_head{SkullOwner:"..avatar:getEntityName().."}"))
+	:item("skeleton_skull")
+	:toggleItem("player_head{SkullOwner:"..avatar:getEntityName().."}")
 	:onToggle(pings.setCameraPos)
 	:toggled(sync[camPos])
 
 a.eyeAct = cameraPage:newAction()
-	:item(itemCheck("ender_pearl"))
-	:toggleItem(itemCheck("ender_eye"))
+	:item("ender_pearl")
+	:toggleItem("ender_eye")
 	:onToggle(pings.setCameraEye)
 	:toggled(sync[eyePos])
 

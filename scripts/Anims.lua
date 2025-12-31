@@ -194,7 +194,7 @@ sync.keybind(sitKeybind, "AnimSitKeybind")
 local t = {}
 
 -- Required script
-local s, wheel, itemCheck, c = pcall(require, "scripts.ActionWheel")
+local s, wheel, c = pcall(require, "scripts.ActionWheel")
 if not s then return end -- Kills script early if ActionWheel.lua isnt found
 
 -- Check for if page already exists
@@ -210,18 +210,18 @@ local a = {}
 -- Actions
 if not pageExists then
 	a.pageAct = parentPage:newAction()
-		:item(itemCheck("jukebox"))
+		:item("jukebox")
 		:onLeftClick(function() wheel:descend(animsPage) end)
 end
 
 a.sitAct = animsPage:newAction()
-	:item(itemCheck("scaffolding"))
-	:toggleItem(itemCheck("saddle"))
+	:item("scaffolding")
+	:toggleItem("saddle")
 	:onToggle(pings.setAnimToggleSit)
 
 a.armsAct = animsPage:newAction()
-	:item(itemCheck("red_dye"))
-	:toggleItem(itemCheck("rabbit_foot"))
+	:item("red_dye")
+	:toggleItem("rabbit_foot")
 	:onToggle(pings.setAnimsArmsMove)
 	:toggled(sync[armsMove])
 
