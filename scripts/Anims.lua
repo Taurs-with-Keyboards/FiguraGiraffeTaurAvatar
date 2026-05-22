@@ -10,15 +10,15 @@ local pose   = require("scripts.Posing")
 local anims = animations.Giraffe
 
 -- Synced variables setup
-local armsMove = sync.add(config:load("ArmsMove"), false)
+local armsMove = sync.new("AnimsArms", false):config()
 
 -- Variables
 local canAct = false
 local canSit = false
 
 -- Arms setup
-local leftArmLerp  = lerp:new(sync[armsMove] and 1 or 0, 0.5)
-local rightArmLerp = lerp:new(sync[armsMove] and 1 or 0, 0.5)
+local leftArmLerp  = lerp.new(armsMove.curr and 1 or 0, 0.5)
+local rightArmLerp = lerp.new(armsMove.curr and 1 or 0, 0.5)
 
 -- Gets the origin rotation of a part, clamped
 local function getOriginRot(part, delta)
@@ -86,8 +86,8 @@ function events.TICK()
 	local armShouldMove = false
 	
 	-- Arms movement targets
-	leftArmLerp.target  = (sync[armsMove] or armShouldMove or swingL or usingL or bow) and 0 or -1
-	rightArmLerp.target = (sync[armsMove] or armShouldMove or swingR or usingR or bow) and 0 or -1
+	leftArmLerp.target  = (armsMove.curr or armShouldMove or swingL or usingL or bow) and 0 or -1
+	rightArmLerp.target = (armsMove.curr or armShouldMove or swingR or usingR or bow) and 0 or -1
 	
 end
 
@@ -172,26 +172,22 @@ function pings.setAnimToggleSit(boolean)
 	
 end
 
--- Arm movement toggle
-function pings.setAnimsArmsMove(boolean)
-	
-	sync[armsMove] = boolean
-	config:save("ArmsMove", sync[armsMove])
-	
-end
-
 -- Host only instructions
 if not host:isHost() then return end
 
--- Keybinds
-local sitKeybind = keybinds:newKeybind("Sit Animation", "key.keyboard.keypad.1")
-	:onPress(function() pings.setAnimToggleSit(not anims.sit:isPlaying()) end)
-
--- Sync config keybinds
-sync.keybind(sitKeybind, "AnimSitKeybind")
-
 -- Table setup
 local t = {}
+
+-- Required script
+local keybound = require("lib.Keybound")
+
+-- Setup keybind
+local sitKeybind = keybound.new(
+	keybinds
+		:newKeybind("Sit Animation", "key.keyboard.keypad.1")
+		:onPress(function() pings.setAnimToggleSit(not anims.sit:isPlaying()) end),
+	"AnimSitKeybind"
+)
 
 -- Required script
 local s, wheel, c = pcall(require, "scripts.ActionWheel")
@@ -222,8 +218,10 @@ a.sitAct = animsPage:newAction()
 a.armsAct = animsPage:newAction()
 	:item("red_dye")
 	:toggleItem("rabbit_foot")
-	:onToggle(pings.setAnimsArmsMove)
-	:toggled(sync[armsMove])
+	:onToggle(function(bool)
+		armsMove:update(bool)
+	end)
+	:toggled(armsMove.curr)
 
 -- Update actions
 function events.RENDER(delta, context)
